@@ -1,13 +1,12 @@
-﻿namespace Reporting.API;
+﻿using Reporting.API.Models;
+using Reporting.API.Services;
+
+namespace Reporting.API;
 
 public class Query
 {
-    public Book GetBook()
+    public IEnumerable<Book> GetBooks(BookService bookService)
     {
-        return new Book("title", new Author("Anton Kharchenko"));
+        return bookService.Books;
     }
 }
-
-public record Book(string Title, Author Author);
-
-public record Author(string Name);
