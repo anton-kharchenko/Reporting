@@ -1,18 +1,22 @@
+using Microsoft.EntityFrameworkCore;
 using Reporting.API;
-using Reporting.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddDbContext<ApplicationDBContext>((serviceProvider, dbContext) =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    dbContext.UseNpgsql(connectionString);
+});
 
 builder.Services.AddGraphQLServer()
     .AddMutationConventions()
     .AddMutationType<Mutation>()
     .AddQueryType<Query>()
-    .RegisterService<BookService>();
+    .RegisterDbContext<ApplicationDBContext>();
 
-builder.Services.AddSingleton<BookService>();
 
 var app = builder.Build();
 
@@ -22,5 +26,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapGraphQL();
+
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    await scope.ServiceProvider.GetRequiredService<ApplicationDBContext>().Database.MigrateAsync();
+}
 
 app.Run();

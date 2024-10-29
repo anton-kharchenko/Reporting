@@ -1,12 +1,14 @@
-﻿using Reporting.API.Models;
-using Reporting.API.Services;
-
-namespace Reporting.API;
+﻿namespace Reporting.API;
 
 public class Query
 {
-    public IEnumerable<Book> GetBooks(BookService bookService)
+    public IQueryable<Book> GetBooks(ApplicationDBContext dbContext)
     {
-        return bookService.Books;
+        return dbContext.Books;
+    }
+    
+    public IQueryable<Author> GetAuthors(ApplicationDBContext dbContext)
+    {
+        return dbContext.Authors;
     }
 }
