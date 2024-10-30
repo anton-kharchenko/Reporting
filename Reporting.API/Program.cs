@@ -12,6 +12,7 @@ builder.Services.AddDbContext<ApplicationDBContext>((serviceProvider, dbContext)
 });
 
 builder.Services.AddGraphQLServer()
+    .AddFiltering()
     .AddMutationConventions()
     .AddMutationType<Mutation>()
     .AddQueryType<Query>()
